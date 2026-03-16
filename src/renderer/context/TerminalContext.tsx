@@ -61,7 +61,7 @@ export const TerminalProvider: React.FC<{ children: React.ReactNode }> = ({
     setConfigs((prev) => [...prev, newConfig]);
 
     // 注册到主进程
-    electronAPI.send('terminal:register' as IPCChannels, newConfig);
+    electronAPI.send(IPCChannels.TERMINAL_REGISTER, newConfig);
   }, []);
 
   const removeConfig = useCallback((id: string) => {

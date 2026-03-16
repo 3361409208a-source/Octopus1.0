@@ -2,7 +2,6 @@ import { IPty, spawn } from 'node-pty';
 import { WebContents } from 'electron';
 import {
   TerminalConfig,
-  TerminalRuntimeState,
   ConnectionStatus,
   TerminalCreatePayload,
   IPCChannels,

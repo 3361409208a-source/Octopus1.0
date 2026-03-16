@@ -4,7 +4,7 @@ import { IPCChannels } from '../shared/types';
 // 暴露安全的 API 给渲染进程
 contextBridge.exposeInMainWorld('electronAPI', {
   // 发送消息到主进程
-  send: (channel: IPCChannels, payload: any) => {
+  send: (channel: IPCChannels, payload: unknown) => {
     const validChannels = Object.values(IPCChannels);
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, payload);
@@ -12,10 +12,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
 
   // 监听主进程消息
-  on: (channel: IPCChannels, callback: (payload: any) => void) => {
+  on: (channel: IPCChannels, callback: (payload: unknown) => void) => {
     const validChannels = Object.values(IPCChannels);
     if (validChannels.includes(channel)) {
-      const subscription = (_: IpcRendererEvent, payload: any) => callback(payload);
+      const subscription = (_: IpcRendererEvent, payload: unknown) => callback(payload);
       ipcRenderer.on(channel, subscription);
       // 返回取消订阅函数
       return () => ipcRenderer.removeListener(channel, subscription);
@@ -24,7 +24,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
 
   // 一次性监听
-  once: (channel: IPCChannels, callback: (payload: any) => void) => {
+  once: (channel: IPCChannels, callback: (payload: unknown) => void) => {
     const validChannels = Object.values(IPCChannels);
     if (validChannels.includes(channel)) {
       ipcRenderer.once(channel, (_, payload) => callback(payload));
@@ -36,9 +36,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
 declare global {
   interface Window {
     electronAPI: {
-      send: (channel: IPCChannels, payload: any) => void;
-      on: (channel: IPCChannels, callback: (payload: any) => void) => () => void;
-      once: (channel: IPCChannels, callback: (payload: any) => void) => void;
+      send: (channel: IPCChannels, payload: unknown) => void;
+      on: (channel: IPCChannels, callback: (payload: unknown) => void) => () => void;
+      once: (channel: IPCChannels, callback: (payload: unknown) => void) => void;
     };
   }
 }

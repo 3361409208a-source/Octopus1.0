@@ -4,6 +4,9 @@ import { useTerminals } from '../context/TerminalContext';
 import Tentacle from '../Tentacle/Tentacle';
 import styles from './Octopus.module.css';
 
+const TENTACLE_RADIUS = 70;
+const MAX_TENTACLES = 8;
+
 const Octopus: React.FC = () => {
   const { state, setPosition, toggleExpanded } = useOctopus();
   const { configs, runtimes, addConfig, startTerminal } = useTerminals();
@@ -44,15 +47,20 @@ const Octopus: React.FC = () => {
 
   // 触手位置计算（圆形分布）
   const tentaclePositions = useMemo(() => {
-    const count = Math.min(configs.length, 8);
-    const radius = 70;
-    return configs.slice(0, 8).map((config, index) => {
+    const count = Math.min(configs.length, MAX_TENTACLES);
+
+    // 使用 Map 优化查找，避免 O(n*m)
+    const runtimeMap = useMemo(() => {
+      return new Map(runtimes.map((r) => [r.configId, r]));
+    }, [runtimes]);
+
+    return configs.slice(0, MAX_TENTACLES).map((config, index) => {
       const angle = (index / count) * 2 * Math.PI - Math.PI / 2;
       return {
         config,
-        runtime: runtimes.find((r) => r.configId === config.id),
-        x: Math.cos(angle) * radius,
-        y: Math.sin(angle) * radius,
+        runtime: runtimeMap.get(config.id),
+        x: Math.cos(angle) * TENTACLE_RADIUS,
+        y: Math.sin(angle) * TENTACLE_RADIUS,
         angle: (angle * 180) / Math.PI + 90,
       };
     });
@@ -90,6 +98,7 @@ const Octopus: React.FC = () => {
         onDoubleClick={(e) => {
           e.stopPropagation();
           // 打开设置面板
+  TODO: 实现设置面板打开功能
         }}
       >
         <div className={styles.bodyInner}>

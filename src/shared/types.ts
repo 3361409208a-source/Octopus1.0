@@ -38,6 +38,7 @@ export interface OctopusState {
 // ============ IPC通信 ============
 
 export enum IPCChannels {
+  TERMINAL_REGISTER = 'terminal:register',
   TERMINAL_CREATE = 'terminal:create',
   TERMINAL_DATA = 'terminal:data',
   TERMINAL_INPUT = 'terminal:input',

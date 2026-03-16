@@ -41,7 +41,7 @@ function initTerminalManager(): void {
   terminalManager = new TerminalManager(mainWindow.webContents);
 
   // IPC 事件处理
-  ipcMain.on('terminal:register', (event, config: TerminalConfig) => {
+  ipcMain.on(IPCChannels.TERMINAL_REGISTER, (event, config: TerminalConfig) => {
     terminalManager?.registerConfig(config);
   });
 
