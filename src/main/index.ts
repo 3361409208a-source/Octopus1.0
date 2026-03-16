@@ -7,13 +7,17 @@ let mainWindow: BrowserWindow | null = null;
 let terminalManager: TerminalManager | null = null;
 
 function createWindow(): void {
+  console.log('创建窗口...');
+
   mainWindow = new BrowserWindow({
     width: 400,
     height: 400,
-    transparent: true,
-    frame: false,
+    transparent: false, // 改为不透明以便看到内容
+    backgroundColor: '#1a1a2e', // 深色背景
+    frame: true, // 显示边框以便调试
     alwaysOnTop: true,
-    resizable: false,
+    resizable: true,
+    skipTaskbar: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -21,16 +25,32 @@ function createWindow(): void {
     },
   });
 
+  console.log('窗口已创建，加载页面...');
+
   // 加载渲染进程
   if (process.env.NODE_ENV === 'development') {
     mainWindow.loadURL('http://localhost:5173');
     mainWindow.webContents.openDevTools();
   } else {
-    mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
+    const htmlPath = path.join(__dirname, '../renderer/index.html');
+    console.log('加载文件:', htmlPath);
+    mainWindow.loadFile(htmlPath);
   }
+
+  // 窗口加载完成后显示
+  mainWindow.once('ready-to-show', () => {
+    console.log('窗口准备显示');
+    mainWindow?.show();
+  });
+
+  // 监听加载失败
+  mainWindow.webContents.on('did-fail-load', (_, errorCode, errorDescription) => {
+    console.error('加载失败:', errorCode, errorDescription);
+  });
 
   // 窗口关闭时清理
   mainWindow.on('closed', () => {
+    console.log('窗口关闭');
     mainWindow = null;
   });
 }

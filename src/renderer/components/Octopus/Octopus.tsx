@@ -78,11 +78,6 @@ const Octopus: React.FC = () => {
   return (
     <div
       className={styles.container}
-      style={{
-        left: state.position.x,
-        top: state.position.y,
-        cursor: isDragging ? 'grabbing' : 'grab',
-      }}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
