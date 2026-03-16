@@ -1,11 +1,20 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { useOctopus } from '../context/OctopusContext';
-import { useTerminals } from '../context/TerminalContext';
+import { useOctopus } from '../../context/OctopusContext';
+import { useTerminals } from '../../context/TerminalContext';
 import Tentacle from '../Tentacle/Tentacle';
 import styles from './Octopus.module.css';
+import type { TerminalConfig, TerminalRuntimeState } from '../../../shared/types';
 
 const TENTACLE_RADIUS = 70;
 const MAX_TENTACLES = 8;
+
+interface TentaclePosition {
+  config: TerminalConfig;
+  runtime: TerminalRuntimeState | undefined;
+  x: number;
+  y: number;
+  angle: number;
+}
 
 const Octopus: React.FC = () => {
   const { state, setPosition, toggleExpanded } = useOctopus();
@@ -45,14 +54,14 @@ const Octopus: React.FC = () => {
     setIsDragging(false);
   }, []);
 
-  // 触手位置计算（圆形分布）
-  const tentaclePositions = useMemo(() => {
-    const count = Math.min(configs.length, MAX_TENTACLES);
+  // 使用 Map 优化查找性能
+  const runtimeMap = useMemo(() => {
+    return new Map(runtimes.map((r) => [r.configId, r]));
+  }, [runtimes]);
 
-    // 使用 Map 优化查找，避免 O(n*m)
-    const runtimeMap = useMemo(() => {
-      return new Map(runtimes.map((r) => [r.configId, r]));
-    }, [runtimes]);
+  // 触手位置计算（圆形分布）
+  const tentaclePositions = useMemo<TentaclePosition[]>(() => {
+    const count = Math.min(configs.length, MAX_TENTACLES);
 
     return configs.slice(0, MAX_TENTACLES).map((config, index) => {
       const angle = (index / count) * 2 * Math.PI - Math.PI / 2;
@@ -64,7 +73,7 @@ const Octopus: React.FC = () => {
         angle: (angle * 180) / Math.PI + 90,
       };
     });
-  }, [configs, runtimes]);
+  }, [configs, runtimeMap]);
 
   return (
     <div
@@ -97,8 +106,7 @@ const Octopus: React.FC = () => {
         onClick={toggleExpanded}
         onDoubleClick={(e) => {
           e.stopPropagation();
-          // 打开设置面板
-  TODO: 实现设置面板打开功能
+          // TODO: 实现设置面板打开功能
         }}
       >
         <div className={styles.bodyInner}>

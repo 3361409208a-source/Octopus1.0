@@ -29,21 +29,22 @@ export const TerminalProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // 监听终端状态更新
   useEffect(() => {
-    const unsubscribe = electronAPI.on(IPCChannels.TERMINAL_STATUS, (payload: { terminalId: string; status: ConnectionStatus; error?: string }) => {
+    const unsubscribe = electronAPI.on(IPCChannels.TERMINAL_STATUS, (payload: unknown) => {
+      const data = payload as { terminalId: string; status: ConnectionStatus; error?: string };
       setRuntimes((prev) => {
-        const existing = prev.find((r) => r.configId === payload.terminalId);
+        const existing = prev.find((r) => r.configId === data.terminalId);
         if (existing) {
           return prev.map((r) =>
-            r.configId === payload.terminalId
-              ? { ...r, status: payload.status, errorMessage: payload.error }
+            r.configId === data.terminalId
+              ? { ...r, status: data.status, errorMessage: data.error }
               : r
           );
         } else {
           const newRuntime: TerminalRuntimeState = {
-            id: payload.terminalId,
-            configId: payload.terminalId,
-            status: payload.status,
-            errorMessage: payload.error,
+            id: data.terminalId,
+            configId: data.terminalId,
+            status: data.status,
+            errorMessage: data.error,
           };
           return [...prev, newRuntime];
         }
