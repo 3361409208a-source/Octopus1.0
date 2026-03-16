@@ -68,8 +68,8 @@ const Octopus: React.FC = () => {
       return {
         config,
         runtime: runtimeMap.get(config.id),
-        x: Math.cos(angle) * TENTACLE_RADIUS,
-        y: Math.sin(angle) * TENTACLE_RADIUS,
+        x: Math.cos(angle) * TENTACLE_RADIUS + 200, // 中心点偏移
+        y: Math.sin(angle) * TENTACLE_RADIUS + 200,
         angle: (angle * 180) / Math.PI + 90,
       };
     });
@@ -78,6 +78,9 @@ const Octopus: React.FC = () => {
   return (
     <div
       className={styles.container}
+      style={{
+        cursor: isDragging ? 'grabbing' : 'grab',
+      }}
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}

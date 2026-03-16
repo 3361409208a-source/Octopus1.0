@@ -12,12 +12,12 @@ function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 400,
     height: 400,
-    transparent: false, // 改为不透明以便看到内容
-    backgroundColor: '#1a1a2e', // 深色背景
-    frame: true, // 显示边框以便调试
+    transparent: true,
+    frame: false,
     alwaysOnTop: true,
-    resizable: true,
+    resizable: false,
     skipTaskbar: false,
+    hasShadow: false,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
