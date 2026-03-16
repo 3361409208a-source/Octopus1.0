@@ -1,0 +1,48 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: transparent;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  user-select: none;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+/* 触手动画 */
+@keyframes tentacle-sway {
+  0%, 100% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+/* 身体浮动动画 */
+@keyframes body-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* 状态颜色 */
+:root {
+  --status-connected: #4ade80;
+  --status-idle: #60a5fa;
+  --status-disconnected: #9ca3af;
+  --status-error: #f87171;
+  --octopus-primary: #f472b6;
+  --octopus-secondary: #fbbf24;
+}
